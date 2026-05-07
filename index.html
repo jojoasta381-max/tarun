@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarun SB — Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#080808;
+  --white:#F4F0E6;
+  --gold:#B8943F;
+  --gold2:#D4AF6A;
+  --dim:#5a5a5a;
+  --line:#1e1e1e;
+  --red:#9B2335;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cur{position:fixed;width:10px;height:10px;background:var(--gold2);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s,height .25s}
+#cur2{position:fixed;width:36px;height:36px;border:1px solid rgba(184,148,63,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .18s ease-out}
+body:hover #cur{width:10px}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:1px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9990;width:0;box-shadow:0 0 6px var(--gold)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;padding:22px 6vw;display:flex;justify-content:space-between;align-items:center;transition:background .4s}
+nav.bg{background:rgba(8,8,8,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-brand{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:4px;color:var(--gold);text-transform:uppercase}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+
+/* HERO */
+#hero{height:100vh;width:100vw;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+.hero-veil{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,transparent 20%,rgba(8,8,8,.7) 70%,var(--black) 100%);z-index:1}
+
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 420px;align-items:center;gap:60px;padding:0 6vw;max-width:1300px;width:100%}
+.hero-text{display:flex;flex-direction:column;gap:18px}
+
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;opacity:0;animation:fup .8s .3s forwards}
+.hero-h1{font-family:'Playfair Display',serif;font-size:clamp(56px,9vw,110px);line-height:.9;font-weight:900;opacity:0;animation:fup .8s .5s forwards}
+.hero-h1 em{color:var(--gold);font-style:italic}
+.hero-sub{font-size:16px;line-height:1.7;color:var(--dim);max-width:460px;font-weight:300;opacity:0;animation:fup .8s .7s forwards}
+.hero-chips{display:flex;flex-wrap:wrap;gap:10px;opacity:0;animation:fup .8s .9s forwards}
+.chip{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 14px;border:1px solid #2a2a2a;color:var(--dim);transition:all .3s}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+
+/* PHOTO PLACEHOLDER */
+.hero-photo{position:relative;z-index:2;opacity:0;animation:fup .8s .6s forwards}
+.photo-frame{width:100%;aspect-ratio:3/4;border:1px solid #2a2a2a;background:#0f0f0f;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.photo-frame::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,148,63,.05) 0%,transparent 50%,rgba(184,148,63,.03) 100%)}
+.photo-corner{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid;opacity:.6}
+.photo-corner.tl{top:12px;left:12px;border-width:1px 0 0 1px}
+.photo-corner.tr{top:12px;right:12px;border-width:1px 1px 0 0}
+.photo-corner.bl{bottom:12px;left:12px;border-width:0 0 1px 1px}
+.photo-corner.br{bottom:12px;right:12px;border-width:0 1px 1px 0}
+.photo-icon-wrap{width:90px;height:90px;border-radius:50%;border:1px solid #2a2a2a;display:flex;align-items:center;justify-content:center}
+.photo-icon{font-size:38px;line-height:1;color:#2a2a2a}
+.photo-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#333}
+.photo-pulse{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);top:0;animation:scanline 3s ease-in-out infinite}
+@keyframes scanline{0%{top:0;opacity:1}100%{top:100%;opacity:0}}
+
+.hero-scroll{position:absolute;bottom:36px;left:6vw;z-index:2;display:flex;align-items:center;gap:14px;opacity:0;animation:fup .8s 1.2s forwards}
+.scroll-text{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--dim)}
+.scroll-track{width:50px;height:1px;background:var(--line);position:relative;overflow:hidden}
+.scroll-dot{position:absolute;width:10px;height:100%;background:var(--gold);animation:trackSlide 2s ease-in-out infinite}
+@keyframes trackSlide{0%{left:-10px}100%{left:50px}}
+
+@keyframes fup{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+
+/* SECTION BASE */
+.section{max-width:1300px;margin:0 auto;padding:120px 6vw}
+.s-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:16px}
+.s-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,#2a2a2a,transparent);max-width:180px}
+.s-title{font-family:'Playfair Display',serif;font-size:clamp(44px,7vw,88px);line-height:.9;font-weight:900;margin-bottom:64px}
+.s-title em{color:var(--gold);font-style:italic}
+
+/* ABOUT GRID */
+#about{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;max-width:1300px;margin:0 auto;padding:80px 6vw}
+.about-text{font-size:17px;line-height:1.85;color:#888;font-weight:300;margin-bottom:32px}
+.about-text strong{color:var(--white);font-weight:400}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1e1e1e;border:1px solid #1e1e1e;margin-top:40px}
+.stat{background:var(--black);padding:28px;transition:background .3s}
+.stat:hover{background:#0d0d0d}
+.stat-n{font-family:'Playfair Display',serif;font-size:44px;color:var(--gold);font-weight:700;line-height:1}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-top:6px}
+.skill-wrap{display:flex;flex-wrap:wrap;gap:9px;margin-top:36px}
+.s-pill{border:1px solid #1e1e1e;padding:8px 16px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;transition:all .3s;cursor:default}
+.s-pill:hover{border-color:var(--gold);color:var(--gold)}
+
+/* DIVIDER */
+.divider{max-width:1300px;margin:0 auto;padding:0 6vw}
+.div-line{height:1px;background:linear-gradient(90deg,transparent,var(--line) 20%,var(--line) 80%,transparent)}
+
+/* ═══════════════════════════════════════
+   CAR ASSEMBLY SCROLLYTELLING
+   ═══════════════════════════════════════ */
+#assembly-section{position:relative}
+
+/* Sticky scene */
+.assembly-sticky{position:sticky;top:0;height:100vh;width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;pointer-events:none}
+
+/* CAR SVG wrapper */
+#car-scene{width:min(700px,90vw);position:relative}
+#car-svg{width:100%;height:auto;filter:drop-shadow(0 20px 60px rgba(0,0,0,.8))}
+
+/* Parts — all start hidden */
+.car-part{opacity:0;transition:opacity .4s ease, transform .4s ease}
+
+/* Timeline items float over the sticky scene */
+.assembly-scroll{position:relative;z-index:10;padding-top:100vh}
+.tl-spacer{height:10vh}
+
+.tl-block{
+  display:grid;
+  grid-template-columns:1fr 80px 1fr;
+  max-width:1000px;
+  margin:0 auto 0;
+  padding:0 4vw;
+  min-height:60vh;
+  align-items:center;
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity .7s ease,transform .7s ease;
+}
+.tl-block.show{opacity:1;transform:none}
+.tl-block:nth-child(even) .tl-card{grid-column:3}
+.tl-block:nth-child(even) .tl-empty{grid-column:1;grid-row:1}
+.tl-block:nth-child(even) .tl-axis{grid-column:2;grid-row:1}
+
+.tl-card{
+  background:rgba(14,14,14,.95);
+  border:1px solid #1e1e1e;
+  padding:32px 28px;
+  position:relative;
+  backdrop-filter:blur(8px);
+}
+.tl-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.tl-card.edu-card::before{background:linear-gradient(90deg,#4A9EC9,transparent)}
+
+.tl-axis{display:flex;flex-direction:column;align-items:center;gap:0;padding:20px 0}
+.tl-circle{width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);background:var(--black);position:relative;z-index:1;transition:background .4s}
+.tl-circle.lit{background:var(--gold);box-shadow:0 0 14px rgba(184,148,63,.7)}
+.tl-vline{flex:1;width:1px;background:linear-gradient(var(--gold2),#2a2a2a)}
+
+.card-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;padding:4px 10px;border:1px solid;display:inline-block;margin-bottom:14px}
+.badge-work{color:var(--gold);border-color:rgba(184,148,63,.4)}
+.badge-edu{color:#4A9EC9;border-color:rgba(74,158,201,.4)}
+.badge-intern{color:#a08060;border-color:rgba(160,128,96,.3)}
+
+.card-co{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--white);margin-bottom:4px}
+.card-role{font-size:14px;color:var(--dim);margin-bottom:10px;font-style:italic}
+.card-dur{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#383838;text-transform:uppercase;margin-bottom:14px}
+.card-body{font-size:13px;line-height:1.7;color:#666}
+.card-body li{margin-left:16px;margin-bottom:4px}
+.card-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.c-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:#383838;border:1px solid #1e1e1e;padding:3px 9px;text-transform:uppercase}
+
+/* part label that appears alongside car */
+.part-label{
+  position:absolute;
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  opacity:0;
+  transition:opacity .5s .2s;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.part-label::before{content:'';position:absolute;top:50%;width:30px;height:1px;background:var(--gold)}
+.part-label.left{right:calc(100% + 40px);text-align:right}
+.part-label.left::before{left:100%;margin-left:5px}
+.part-label.right{left:calc(100% + 40px)}
+.part-label.right::before{right:100%;margin-right:5px}
+#car-scene.label-show .part-label{opacity:1}
+
+/* ═══ CONTACT ═══ */
+#contact{max-width:1300px;margin:0 auto;padding:80px 6vw 120px;text-align:center;border-top:1px solid var(--line)}
+.contact-h{font-family:'Playfair Display',serif;font-size:clamp(54px,10vw,130px);line-height:.88;font-weight:900;margin-bottom:28px}
+.contact-h em{color:var(--gold);font-style:italic}
+.contact-link{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:3px;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(184,148,63,.3);padding-bottom:3px;transition:all .3s}
+.contact-link:hover{color:var(--white);border-color:var(--white)}
+.contact-row{display:flex;justify-content:center;gap:20px;margin-top:40px;flex-wrap:wrap}
+.c-badge{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:12px 22px;border:1px solid #1e1e1e;color:var(--dim);transition:all .3s}
+.c-badge:hover{border-color:var(--gold);color:var(--gold)}
+.copy{margin-top:80px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:#222;text-transform:uppercase}
+
+/* REVEAL */
+.rev{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
+.rev.on{opacity:1;transform:none}
+
+@media(max-width:768px){
+  #about{grid-template-columns:1fr}
+  .hero-inner{grid-template-columns:1fr}
+  .hero-photo{display:none}
+  .tl-block{grid-template-columns:1fr 50px;min-height:40vh}
+  .tl-block:nth-child(even) .tl-card{grid-column:1}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+<div id="prog"></div>
+
+<nav id="nav">
+  <div class="nav-brand">TSB</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#assembly-section">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<div id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-veil"></div>
+
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Portfolio · Project Management & Engineering</div>
+      <h1 class="hero-h1">Tarun<br><em>S B</em></h1>
+      <p class="hero-sub">A detail-oriented Mechanical Engineer bridging <strong>R&D precision</strong> with strategic <strong>project leadership</strong>. Automotive industry specialist — now building toward global project delivery.</p>
+      <div class="hero-chips">
+        <span class="chip">Sydney, NSW</span>
+        <span class="chip">Open to Work</span>
+        <span class="chip">MSc Project Mgmt</span>
+        <span class="chip">He / Him</span>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="photo-frame">
+        <div class="photo-corner tl"></div>
+        <div class="photo-corner tr"></div>
+        <div class="photo-corner bl"></div>
+        <div class="photo-corner br"></div>
+        <div class="photo-pulse"></div>
+        <div class="photo-icon-wrap">
+          <div class="photo-icon">&#9711;</div>
+        </div>
+        <div class="photo-label">Photo Placeholder</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-track"><div class="scroll-dot"></div></div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<div id="about">
+  <div class="rev">
+    <div class="s-label">00 — Profile</div>
+    <div class="s-title">Driven<br>to <em>Build</em></div>
+    <p class="about-text">A <strong>Mechanical Engineer with 1+ years</strong> of hands-on experience in R&amp;D design and welding processes within the automotive industry. Skilled in <strong>CAD modeling, prototyping,</strong> and implementing innovative manufacturing solutions.</p>
+    <p class="about-text">Currently pursuing a <strong>Master's in Project Management</strong> at Western Sydney University — complementing deep technical expertise with strategic delivery and stakeholder management skills.</p>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-n">1+</div><div class="stat-l">Years Industry Exp.</div></div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Companies</div></div>
+      <div class="stat"><div class="stat-n">MSc</div><div class="stat-l">Project Management</div></div>
+      <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Connections</div></div>
+    </div>
+  </div>
+  <div class="rev" style="transition-delay:.15s">
+    <div class="s-label">Skills</div>
+    <div style="font-family:'Playfair Display',serif;font-size:32px;margin-bottom:28px;color:var(--white)">Technical Arsenal</div>
+    <div class="skill-wrap">
+      <span class="s-pill">Microsoft Project</span>
+      <span class="s-pill">CATIA</span>
+      <span class="s-pill">CAD Modeling</span>
+      <span class="s-pill">R&amp;D Design</span>
+      <span class="s-pill">LEAN Six Sigma</span>
+      <span class="s-pill">Prototyping</span>
+      <span class="s-pill">Quality Assurance</span>
+      <span class="s-pill">Bogie Assembly</span>
+      <span class="s-pill">Engine Manufacturing</span>
+      <span class="s-pill">Stakeholder Mgmt</span>
+    </div>
+    <div style="margin-top:48px;padding:28px;border:1px solid #1e1e1e;background:#0a0a0a">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Currently</div>
+      <div style="font-size:15px;color:#888;font-weight:300;line-height:1.7">Open to <strong style="color:var(--white);font-weight:400">on-site &amp; remote roles</strong> in Sydney, NSW — project management, design engineering, and automotive sector opportunities.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider rev"><div class="div-line"></div></div>
+
+<!-- ═══ EXPERIENCE + EDUCATION: CAR ASSEMBLY SCROLLYTELLING ═══ -->
+<div id="assembly-section">
+
+  <!-- STICKY CAR SCENE -->
+  <div class="assembly-sticky">
+    <div id="car-scene">
+
+      <!-- CAR SVG — Built part by part -->
+      <svg id="car-svg" viewBox="0 0 700 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- PART 1: CHASSIS / FLOOR -->
+        <g id="part-chassis" class="car-part">
+          <rect x="80" y="210" width="540" height="28" rx="4" fill="#1a1a1a" stroke="#B8943F" stroke-width="1"/>
+          <rect x="100" y="218" width="500" height="12" rx="2" fill="#141414"/>
+          <!-- Axle mounts -->
+          <rect x="140" y="224" width="60" height="8" rx="2" fill="#222" stroke="#2a2a2a" stroke-width=".5"/>
+          <rect x="500" y="224" width="60" height="8" rx="2" fill="#222" stroke="#2a2a2a" stroke-width=".5"/>
+        </g>
+
+        <!-- PART 2: WHEELS -->
+        <g id="part-wheels" class="car-part">
+          <!-- Front wheel -->
+          <circle cx="530" cy="248" r="42" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
+          <circle cx="530" cy="248" r="30" fill="#0d0d0d" stroke="#B8943F" stroke-width="1"/>
+          <circle cx="530" cy="248" r="14" fill="#1a1a1a" stroke="#555" stroke-width="1"/>
+          <circle cx="530" cy="248" r="4" fill="#B8943F"/>
+          <!-- Spokes -->
+          <line x1="530" y1="218" x2="530" y2="278" stroke="#333" stroke-width="1.5"/>
+          <line x1="500" y1="248" x2="560" y2="248" stroke="#333" stroke-width="1.5"/>
+          <line x1="509" y1="227" x2="551" y2="269" stroke="#333" stroke-width="1.5"/>
+          <line x1="551" y1="227" x2="509" y2="269" stroke="#333" stroke-width="1.5"/>
+
+          <!-- Rear wheel -->
+          <circle cx="170" cy="248" r="42" fill="#111" stroke="#2a2a2a" stroke-width="1.5"/>
+          <circle cx="170" cy="248" r="30" fill="#0d0d0d" stroke="#B8943F" stroke-width="1"/>
+          <circle cx="170" cy="248" r="14" fill="#1a1a1a" stroke="#555" stroke-width="1"/>
+          <circle cx="170" cy="248" r="4" fill="#B8943F"/>
+          <line x1="170" y1="218" x2="170" y2="278" stroke="#333" stroke-width="1.5"/>
+          <line x1="140" y1="248" x2="200" y2="248" stroke="#333" stroke-width="1.5"/>
+          <line x1="149" y1="227" x2="191" y2="269" stroke="#333" stroke-width="1.5"/>
+          <line x1="191" y1="227" x2="149" y2="269" stroke="#333" stroke-width="1.5"/>
+        </g>
+
+        <!-- PART 3: BODY LOWER -->
+        <g id="part-body-lower" class="car-part">
+          <path d="M110 210 L110 175 Q112 168 120 165 L580 165 Q588 168 590 175 L590 210 Z" fill="#131313" stroke="#2a2a2a" stroke-width="1"/>
+          <!-- Door lines -->
+          <line x1="300" y1="167" x2="300" y2="210" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="420" y1="167" x2="420" y2="210" stroke="#1a1a1a" stroke-width="1"/>
+          <!-- Door handles -->
+          <rect x="260" y="185" width="22" height="5" rx="2" fill="#222" stroke="#333" stroke-width=".5"/>
+          <rect x="380" y="185" width="22" height="5" rx="2" fill="#222" stroke="#333" stroke-width=".5"/>
+          <rect x="490" y="185" width="22" height="5" rx="2" fill="#222" stroke="#333" stroke-width=".5"/>
+        </g>
+
+        <!-- PART 4: ROOF / CABIN -->
+        <g id="part-cabin" class="car-part">
+          <path d="M220 165 L250 110 Q260 96 278 92 L420 92 Q438 96 448 110 L480 165 Z" fill="#0f0f0f" stroke="#2a2a2a" stroke-width="1"/>
+          <!-- Windows -->
+          <path d="M256 160 L278 118 Q283 110 292 108 L348 108 L348 160 Z" fill="#0a1520" stroke="#B8943F" stroke-width=".7" opacity=".9"/>
+          <path d="M352 108 L408 108 Q417 110 422 118 L444 160 L352 160 Z" fill="#0a1520" stroke="#B8943F" stroke-width=".7" opacity=".9"/>
+          <!-- Window shine -->
+          <path d="M262 154 L282 122 Q285 115 290 113 L310 113 L310 120 L286 126 L268 154 Z" fill="#0d1e2e" opacity=".5"/>
+          <path d="M356 113 L380 113 L380 120 L356 120 Z" fill="#0d1e2e" opacity=".5"/>
+          <!-- B-pillar -->
+          <rect x="348" y="108" width="4" height="52" fill="#1a1a1a" stroke="#222" stroke-width=".5"/>
+        </g>
+
+        <!-- PART 5: ENGINE / HOOD -->
+        <g id="part-hood" class="car-part">
+          <path d="M480 165 L480 175 L590 175 L590 165 Z" fill="#1a1a1a" stroke="#2a2a2a" stroke-width=".5"/>
+          <path d="M480 160 Q490 140 510 132 L560 128 Q580 128 592 138 L600 160 Z" fill="#131313" stroke="#2a2a2a" stroke-width="1"/>
+          <!-- Hood vent lines -->
+          <line x1="508" y1="135" x2="500" y2="158" stroke="#1e1e1e" stroke-width="1"/>
+          <line x1="522" y1="132" x2="514" y2="158" stroke="#1e1e1e" stroke-width="1"/>
+          <line x1="536" y1="130" x2="528" y2="158" stroke="#1e1e1e" stroke-width="1"/>
+          <line x1="550" y1="129" x2="545" y2="158" stroke="#1e1e1e" stroke-width="1"/>
+        </g>
+
+        <!-- PART 6: LIGHTS -->
+        <g id="part-lights" class="car-part">
+          <!-- Headlight -->
+          <path d="M592 138 L614 148 L614 165 L592 165 Z" fill="#0a0a0a" stroke="#B8943F" stroke-width="1"/>
+          <path d="M596 142 L610 150 L610 162 L596 162 Z" fill="#1a1a1a"/>
+          <!-- Headlight glow -->
+          <ellipse cx="612" cy="156" rx="4" ry="8" fill="#D4AF6A" opacity=".7"/>
+          <line x1="614" y1="148" x2="650" y2="140" stroke="#D4AF6A" stroke-width=".7" opacity=".4"/>
+          <line x1="614" y1="156" x2="655" y2="156" stroke="#D4AF6A" stroke-width=".7" opacity=".5"/>
+          <line x1="614" y1="163" x2="650" y2="170" stroke="#D4AF6A" stroke-width=".7" opacity=".4"/>
+
+          <!-- Tail light -->
+          <path d="M108 160 L90 170 L90 185 L108 185 Z" fill="#0a0a0a" stroke="#9B2335" stroke-width="1"/>
+          <ellipse cx="92" cy="173" rx="3" ry="6" fill="#9B2335" opacity=".8"/>
+        </g>
+
+        <!-- PART 7: DETAILS / FINAL POLISH -->
+        <g id="part-details" class="car-part">
+          <!-- Grille -->
+          <path d="M597 165 L614 165 L614 180 L597 180 Z" fill="#0d0d0d" stroke="#B8943F" stroke-width=".7"/>
+          <line x1="600" y1="165" x2="600" y2="180" stroke="#1a1a1a" stroke-width=".5"/>
+          <line x1="604" y1="165" x2="604" y2="180" stroke="#1a1a1a" stroke-width=".5"/>
+          <line x1="608" y1="165" x2="608" y2="180" stroke="#1a1a1a" stroke-width=".5"/>
+          <line x1="612" y1="165" x2="612" y2="180" stroke="#1a1a1a" stroke-width=".5"/>
+          <line x1="597" y1="169" x2="614" y2="169" stroke="#1a1a1a" stroke-width=".5"/>
+          <line x1="597" y1="174" x2="614" y2="174" stroke="#1a1a1a" stroke-width=".5"/>
+          <!-- Bumper -->
+          <path d="M614 165 L630 172 L630 185 L614 185 L614 165 Z" fill="#111" stroke="#222" stroke-width=".7"/>
+          <!-- Side mirror -->
+          <rect x="476" y="125" width="18" height="10" rx="2" fill="#141414" stroke="#2a2a2a" stroke-width=".7"/>
+          <!-- Roof accent line -->
+          <path d="M252 160 L448 160" stroke="#B8943F" stroke-width=".5" opacity=".4"/>
+          <!-- Brand badge -->
+          <circle cx="350" cy="95" r="7" fill="#0f0f0f" stroke="#B8943F" stroke-width="1"/>
+          <text x="350" y="99" text-anchor="middle" font-family="DM Sans" font-size="7" fill="#B8943F" font-weight="500">T</text>
+          <!-- Wheel arches -->
+          <path d="M110 208 Q130 190 170 187 Q210 190 230 208" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+          <path d="M470 208 Q490 190 530 187 Q570 190 590 208" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+          <!-- Undercarriage -->
+          <line x1="230" y1="238" x2="470" y2="238" stroke="#1a1a1a" stroke-width="1"/>
+          <!-- Road shadow -->
+          <ellipse cx="350" cy="296" rx="220" ry="8" fill="#0a0a0a" opacity=".6"/>
+          <ellipse cx="350" cy="300" rx="180" ry="5" fill="rgba(0,0,0,.4)"/>
+        </g>
+
+        <!-- Assembly glow ring — visible at start -->
+        <g id="assembly-glow" opacity="1">
+          <circle cx="350" cy="200" r="160" stroke="rgba(184,148,63,.06)" stroke-width="1" fill="none"/>
+          <circle cx="350" cy="200" r="200" stroke="rgba(184,148,63,.03)" stroke-width="1" fill="none"/>
+        </g>
+
+      </svg>
+
+      <!-- Part labels -->
+      <div class="part-label left" style="top:68%;transform:translateY(-50%)" id="lbl-chassis">Chassis Frame</div>
+      <div class="part-label right" style="top:80%;transform:translateY(-50%)" id="lbl-wheels">Alloy Wheels</div>
+      <div class="part-label left" style="top:56%;transform:translateY(-50%)" id="lbl-body">Body Shell</div>
+      <div class="part-label right" style="top:36%;transform:translateY(-50%)" id="lbl-cabin">Cabin & Glass</div>
+      <div class="part-label right" style="top:50%;transform:translateY(-50%)" id="lbl-hood">Engine Hood</div>
+      <div class="part-label right" style="top:58%;transform:translateY(-50%)" id="lbl-lights">Lighting System</div>
+      <div class="part-label left" style="top:42%;transform:translateY(-50%)" id="lbl-detail">Final Detailing</div>
+    </div>
+  </div>
+
+  <!-- SCROLLABLE TIMELINE CARDS -->
+  <div class="assembly-scroll">
+
+    <!-- Section header -->
+    <div style="max-width:1000px;margin:0 auto;padding:60px 4vw 40px">
+      <div class="s-label rev">01 — Experience & Education</div>
+      <div class="s-title rev">Career<br><em>Assembly</em></div>
+      <p class="rev" style="color:var(--dim);font-size:15px;max-width:500px;font-weight:300;line-height:1.7;transition-delay:.1s">Each role — a component. Together, they build something greater. Scroll to assemble.</p>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 1: Ashok Leyland — triggers chassis -->
+    <div class="tl-block" data-part="part-chassis" data-label="lbl-chassis">
+      <div class="tl-card">
+        <span class="card-badge badge-intern">Internship</span>
+        <div class="card-co">Ashok Leyland</div>
+        <div class="card-role">Internship Trainee</div>
+        <div class="card-dur">Apr 2018 – May 2018 · 2 months · Chennai, India</div>
+        <ul class="card-body">
+          <li>Studied &amp; observed Engine manufacturing and truck assembly processes</li>
+          <li>Learnt quality assurance mechanisms and observed LEAN Six Sigma in action</li>
+        </ul>
+        <div class="card-tags"><span class="c-tag">LEAN Six Sigma</span><span class="c-tag">QA</span><span class="c-tag">Engine Mfg</span></div>
+      </div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-1"></div>
+        <div class="tl-vline"></div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 2: ICF — triggers wheels -->
+    <div class="tl-block" data-part="part-wheels" data-label="lbl-wheels">
+      <div class="tl-empty"></div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-2"></div>
+        <div class="tl-vline"></div>
+      </div>
+      <div class="tl-card">
+        <span class="card-badge badge-intern">Internship</span>
+        <div class="card-co">Integral Coach Factory</div>
+        <div class="card-role">Internship Trainee</div>
+        <div class="card-dur">Sep 2018 · 1 month · Chennai, India</div>
+        <ul class="card-body">
+          <li>Studied suspension systems in metro &amp; mono train units exported to Japan / China</li>
+          <li>Analyzed and generated report on Bogie assembly processes</li>
+        </ul>
+        <div class="card-tags"><span class="c-tag">Suspension</span><span class="c-tag">Bogie Assembly</span><span class="c-tag">Rail</span></div>
+      </div>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 3: TPI — triggers body lower -->
+    <div class="tl-block" data-part="part-body-lower" data-label="lbl-body">
+      <div class="tl-card">
+        <span class="card-badge badge-intern">Full-time Intern</span>
+        <div class="card-co">Tube Products of India</div>
+        <div class="card-role">Project Intern</div>
+        <div class="card-dur">Mar 2021 – Apr 2021 · 2 months · Chennai, India</div>
+        <ul class="card-body">
+          <li>Studied manufacturing processes at the Tubular Components Division (TCD)</li>
+          <li>Focus on high-strength tubular auto components for global OEM clients</li>
+        </ul>
+        <div class="card-tags"><span class="c-tag">Microsoft Project</span><span class="c-tag">Tubular Mfg</span><span class="c-tag">Automotive</span></div>
+      </div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-3"></div>
+        <div class="tl-vline"></div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 4: Stellantis — triggers cabin -->
+    <div class="tl-block" data-part="part-cabin" data-label="lbl-cabin">
+      <div class="tl-empty"></div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-4"></div>
+        <div class="tl-vline"></div>
+      </div>
+      <div class="tl-card">
+        <span class="card-badge badge-work">Full-time</span>
+        <div class="card-co">Stellantis</div>
+        <div class="card-role">Design Engineer</div>
+        <div class="card-dur">Jul 2022 – Jan 2024 · 1 yr 7 mos · Chennai, India · Hybrid</div>
+        <div class="card-body">Core R&amp;D design and welding engineering for the automotive division. Led prototyping workflows, collaborated cross-functionally with global manufacturing teams.</div>
+        <div class="card-tags"><span class="c-tag">CATIA</span><span class="c-tag">Microsoft Project</span><span class="c-tag">R&D</span><span class="c-tag">Prototyping</span><span class="c-tag">+5 skills</span></div>
+      </div>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 5: Hood — WSU (Education) -->
+    <div class="tl-block" data-part="part-hood" data-label="lbl-hood">
+      <div class="tl-card edu-card">
+        <span class="card-badge badge-edu">Master's Degree</span>
+        <div class="card-co">Western Sydney University</div>
+        <div class="card-role">Master's in Project Management</div>
+        <div class="card-dur">Feb 2024 – Nov 2025 · Sydney, NSW, Australia</div>
+        <div class="card-body">Bridging technical engineering depth with strategic project leadership, delivery methodologies, risk management, and executive stakeholder engagement skills.</div>
+        <div class="card-tags"><span class="c-tag">Project Management</span><span class="c-tag">Strategy</span><span class="c-tag">Risk Mgmt</span><span class="c-tag">Leadership</span></div>
+      </div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-5"></div>
+        <div class="tl-vline"></div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 6: Lights -->
+    <div class="tl-block" data-part="part-lights" data-label="lbl-lights">
+      <div class="tl-empty"></div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-6"></div>
+        <div class="tl-vline"></div>
+      </div>
+      <div class="tl-card">
+        <span class="card-badge badge-work">Looking Ahead</span>
+        <div class="card-co">Next Chapter</div>
+        <div class="card-role">Open to New Opportunities</div>
+        <div class="card-dur">2026 → · Sydney, NSW · On-site or Remote</div>
+        <div class="card-body">Seeking roles where engineering precision meets project leadership — automotive, infrastructure, or technology sectors. Ready to deliver from day one.</div>
+        <div class="card-tags"><span class="c-tag">Sydney</span><span class="c-tag">Remote Ready</span><span class="c-tag">PM Roles</span><span class="c-tag">Engineering</span></div>
+      </div>
+    </div>
+
+    <div class="tl-spacer"></div>
+
+    <!-- CARD 7: Final details -->
+    <div class="tl-block" data-part="part-details" data-label="lbl-detail">
+      <div class="tl-card" style="background:rgba(20,14,4,.95);border-color:rgba(184,148,63,.25)">
+        <span class="card-badge badge-work" style="border-color:rgba(184,148,63,.5)">The Full Picture</span>
+        <div class="card-co" style="font-size:20px">Tarun S B</div>
+        <div class="card-role">Project Management Graduate · Mechanical Engineer</div>
+        <div class="card-dur">tarunsaravananwork@gmail.com</div>
+        <div class="card-body">From engine floors to design studios to academic mastery — every experience a precision component, assembled into a professional who builds, leads, and delivers.</div>
+        <div class="card-tags">
+          <span class="c-tag">500+ Connections</span>
+          <span class="c-tag">Sydney, NSW</span>
+          <span class="c-tag">Open to Work</span>
+        </div>
+      </div>
+      <div class="tl-axis">
+        <div class="tl-circle" id="dot-7" style="border-color:var(--gold);background:var(--gold);box-shadow:0 0 16px rgba(184,148,63,.8)"></div>
+      </div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <div style="height:30vh"></div>
+  </div>
+</div>
+
+<div class="divider rev"><div class="div-line"></div></div>
+
+<!-- ═══ CONTACT ═══ -->
+<div id="contact">
+  <div class="s-label rev" style="justify-content:center">02 — Contact</div>
+  <div class="contact-h rev">Let's<br><em>Connect</em></div>
+  <p class="rev" style="transition-delay:.05s"><a href="mailto:tarunsaravananwork@gmail.com" class="contact-link">tarunsaravananwork@gmail.com</a></p>
+  <div class="contact-row rev" style="transition-delay:.1s">
+    <div class="c-badge">Project Management</div>
+    <div class="c-badge">Design Engineering</div>
+    <div class="c-badge">Automotive</div>
+    <div class="c-badge">Sydney · Remote</div>
+  </div>
+  <div class="copy">© 2026 Tarun SB — Engineered with intention</div>
+</div>
+
+<script>
+/* ─── CURSOR ─── */
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(loop)})();
+
+/* ─── PROGRESS ─── */
+const pb=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  pb.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('bg',window.scrollY>50);
+});
+
+/* ─── DOLLY ZOOM CANVAS ─── */
+const cv=document.getElementById('hero-canvas'),cx2=cv.getContext('2d');
+let W,H;
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+rsz();window.addEventListener('resize',rsz);
+const pts=Array.from({length:160},()=>({x:(Math.random()-0.5)*2200,y:(Math.random()-0.5)*2200,z:Math.random()*900+100,s:Math.random()*.4+.1}));
+let fov=320,fDir=1,fT=0;
+function drawHero(){
+  cx2.clearRect(0,0,W,H);
+  cx2.fillStyle='rgba(8,8,8,.15)';cx2.fillRect(0,0,W,H);
+  fT+=.003*fDir;if(fT>1||fT<0)fDir*=-1;
+  fov=280+(fT)*(520);
+  const camZ=100+(1-fT)*700;
+  for(const p of pts){
+    p.z-=p.s*2.5;if(p.z<1)p.z=900;
+    const zr=p.z-camZ;if(zr<1)continue;
+    const sc=fov/zr;
+    const sx=W/2+p.x*sc,sy=H/2+p.y*sc;
+    const r=Math.max(.2,2*sc);
+    const a=Math.min(.8,sc*1.2);
+    cx2.beginPath();cx2.arc(sx,sy,r,0,Math.PI*2);
+    cx2.fillStyle=`rgba(184,148,63,${a*.45})`;cx2.fill();
+  }
+  requestAnimationFrame(drawHero);
+}
+drawHero();
+
+/* ─── HERO PARALLAX ─── */
+const heroInner=document.querySelector('.hero-inner');
+window.addEventListener('scroll',()=>{
+  const s=window.scrollY;
+  if(s<window.innerHeight){
+    heroInner.style.transform=`translateY(${s*.35}px)`;
+    heroInner.style.opacity=Math.max(0,1-s/600);
+  }
+});
+
+/* ─── REVEAL ─── */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.12});
+document.querySelectorAll('.rev').forEach(el=>ro.observe(el));
+
+/* ─── CAR ASSEMBLY SCROLLYTELLING ─── */
+const assemblySection=document.getElementById('assembly-section');
+const stickyScene=document.querySelector('.assembly-sticky');
+const carScene=document.getElementById('car-scene');
+const blocks=document.querySelectorAll('.tl-block');
+const parts={};
+document.querySelectorAll('.car-part').forEach(p=>parts[p.id]=p);
+
+// Map: which parts should be shown for each card index (cumulative)
+const partOrder=['part-chassis','part-wheels','part-body-lower','part-cabin','part-hood','part-lights','part-details'];
+
+let lastShown=-1;
+
+function updateAssembly(){
+  const vh=window.innerHeight;
+
+  blocks.forEach((block,i)=>{
+    const rect=block.getBoundingClientRect();
+    const mid=rect.top+rect.height/2;
+    const visible=rect.top<vh*.8&&rect.bottom>0;
+
+    if(visible)block.classList.add('show');
+
+    // Card is in the "active zone" — center of viewport
+    const inActive=rect.top<vh*.6&&rect.bottom>vh*.4;
+    const dotId='dot-'+(i+1);
+    const dot=document.getElementById(dotId);
+    if(dot&&inActive)dot.classList.add('lit');
+
+    if(inActive&&i>lastShown){
+      // Reveal all parts up to this index
+      for(let j=0;j<=i&&j<partOrder.length;j++){
+        const p=parts[partOrder[j]];
+        if(p){p.style.opacity='1';p.style.transform='none';}
+      }
+      // Hide label group, show only current
+      document.querySelectorAll('.part-label').forEach(l=>l.style.opacity='0');
+      const lbl=block.dataset.label;
+      if(lbl)document.getElementById(lbl).style.opacity='1';
+      lastShown=i;
+    }
+  });
+}
+
+// Init — hide all parts with offset
+partOrder.forEach((id,i)=>{
+  const p=parts[id];
+  if(p){p.style.opacity='0';p.style.transform=`translateY(${10+i*5}px)`;}
+});
+
+window.addEventListener('scroll',updateAssembly);
+updateAssembly();
+</script>
+</body>
+</html>
